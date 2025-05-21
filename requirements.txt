@@ -1,0 +1,6 @@
+flask
+flask-cors
+flask-session
+google-generativeai
+PyPDF2
+pandas

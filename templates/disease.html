@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Prediction</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f4; }
+        #container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); text-align: center; }
+        label { font-weight: bold; margin-top: 10px; display: block; }
+        input { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { margin-top: 15px; background-color: #635bff; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; width: 100%; }
+        button:hover { background-color: #7c76ff; }
+        #result { margin-top: 15px; padding: 10px; background-color: #e8f5e9; border-radius: 4px; display: none; }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h2>Plant Disease Prediction</h2>
+        <form id="diseaseForm">
+            <label for="image">Upload Plant Image:</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+            <button type="submit">Predict Disease</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById("diseaseForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append("image", document.getElementById("image").files[0]);
+
+            try {
+                const response = await fetch("/predict_disease/", {
+                    method: "POST",
+                    body: formData
+                });
+                const result = await response.json();
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+                
+                const resultDiv = document.getElementById("result");
+                resultDiv.innerHTML = `<strong>Prediction:</strong> ${result.prediction}`;
+                resultDiv.style.display = "block";
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error: " + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
